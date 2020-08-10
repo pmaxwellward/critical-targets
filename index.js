@@ -8,13 +8,7 @@ let createScene = () => {
 
 // Main Screen
 //----------------------------------------------------------------------------------------------------
-    /*
-    const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), scene);
-    camera.setPosition(new BABYLON.Vector3(-34, 0, 410));
-    camera.attachControl(canvas, false);
-    camera.lowerRadiusLimit = 50;
-    camera.upperRadiusLimit = 500;
-    */
+
    	/********** FOLLOW CAMERA EXAMPLE **************************/
     // This creates and initially positions a follow camera 
     let camDefaultPos = new BABYLON.Mesh("camDefaultPos", scene);
@@ -61,15 +55,19 @@ let createScene = () => {
     skyboxMaterial.specularColor = new BABYLON.Color3(0,0,0);
     skyboxMaterial.disableLighting = true;
     skybox.material = skyboxMaterial;
-
+    
     // Jupiter
     let jup_mat = new BABYLON.StandardMaterial("jup_mat", scene);
     jup_mat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
     jup_mat.emissiveTexture = new BABYLON.Texture("textures/jup.jpg", scene);
     jup_mat.ambientTexture = new BABYLON.Texture("textures/jup.jpg", scene);
     let jup = BABYLON.Mesh.CreateSphere("JUPITER", 32, 130, scene);
+    jup.id = "jup";
     jup.position = new BABYLON.Vector3(0, 0, 0);
     jup.material = jup_mat;
+    let jup_l = new BABYLON.Mesh("jup_l", scene);
+    jup_l.parent = jup;
+    jup_l.position = new BABYLON.Vector3(0, 85, 0);
 
     // Europa
     let eur_p = new BABYLON.Mesh("eur_p",scene);
@@ -79,8 +77,12 @@ let createScene = () => {
     eur_mat.ambientTexture = new BABYLON.Texture("textures/eur.png", scene);
     eur_mat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
     let eur = BABYLON.Mesh.CreateSphere("EUROPA", 16, 5, scene);
+    eur.id = "eur";
     eur.parent = eur_p;
     eur.material = eur_mat;
+    let eur_l = new BABYLON.Mesh("eur_l", scene);
+    eur_l.parent = eur;
+    eur_l.position = new BABYLON.Vector3(0, 15, 0);
     
     // Ganymede
     let gan_p = new BABYLON.Mesh("gan_p",scene);
@@ -90,8 +92,12 @@ let createScene = () => {
     gan_mat.ambientTexture = new BABYLON.Texture("textures/gan.png", scene);
     gan_mat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
     let gan = BABYLON.Mesh.CreateSphere("GANYMEDE", 16, 5, scene);
+    gan.id = "gan";
     gan.parent = gan_p;
     gan.material = gan_mat;
+    let gan_l = new BABYLON.Mesh("gan_l", scene);
+    gan_l.parent = gan;
+    gan_l.position = new BABYLON.Vector3(0, 15, 0);
     
     // Io
     let io_p = new BABYLON.Mesh('io_p', scene);
@@ -101,8 +107,12 @@ let createScene = () => {
     io_mat.ambientTexture = new BABYLON.Texture("textures/io.png", scene);
     io_mat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
     let io = BABYLON.Mesh.CreateSphere("IO", 16, 5, scene);
+    io.id = "io";
     io.parent = io_p;
     io.material = io_mat;
+    let io_l = new BABYLON.Mesh("io_l", scene);
+    io_l.parent = io;
+    io_l.position = new BABYLON.Vector3(0, 15, 0);
     
     // Calisto
     let cal_p = new BABYLON.Mesh('cal_p', scene);
@@ -112,8 +122,12 @@ let createScene = () => {
     cal_mat.ambientTexture = new BABYLON.Texture("textures/cal.png", scene);
     cal_mat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
     let cal = BABYLON.Mesh.CreateSphere("CALISTO", 16, 5, scene);
+    cal.id = "cal";
     cal.parent = cal_p;
     cal.material = cal_mat;
+    let cal_l = new BABYLON.Mesh("cal_l", scene);
+    cal_l.parent = cal;
+    cal_l.position = new BABYLON.Vector3(0, 15, 0);
 
     // GUI
     let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -146,36 +160,11 @@ let createScene = () => {
 
     let labels = [];
 
-    let eur_label = new BABYLON.GUI.TextBlock('eur_label','EUROPA');
-    let io_label = new BABYLON.GUI.TextBlock('io_label','IO');
-    let jup_label = new BABYLON.GUI.TextBlock('jup_label','JUPITER');
-    let gan_label = new BABYLON.GUI.TextBlock('gan_label','GANYMEDE');
-    let cal_label = new BABYLON.GUI.TextBlock('cal_label','CALISTO');
-
-    labels.push(
-        eur_label,
-        io_label,
-        jup_label,
-        gan_label,
-        cal_label
-    );
-
-    setLabel(labels);
-
-    function setLabel(array) {
-        for(let i = 0; i < array.length; i++) {   
-            array[i].fontFamily = 'arial';
-            array[i].color = 'white';
-            array[i].textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-            array[i].fontSize = 20;
-            array[i].isVisible = false;
-            advancedTexture.addControl(array[i]);
-            //
-            let mesh = scene.getMeshByName(array[i].text);
-            array[i].linkWithMesh(mesh);   
-            array[i].linkOffsetY = -100;
-        }
-    }
+    //let eur_label = new BABYLON.GUI.TextBlock('eur_label','EUROPA');
+    //let io_label = new BABYLON.GUI.TextBlock('io_label','IO');
+    //let jup_label = new BABYLON.GUI.TextBlock('jup_label','JUPITER');
+    //let gan_label = new BABYLON.GUI.TextBlock('gan_label','GANYMEDE');
+    //let cal_label = new BABYLON.GUI.TextBlock('cal_label','CALISTO');
 
     function createButtons(array) {
         for(let i = 0; i < array.length; i++) {
@@ -209,8 +198,8 @@ let createScene = () => {
                 let planet = array[i].name.split('_').shift();
                 let on = buttons.find(o => o.name === planet + '_on');
                 let meshParent = planet + '_p';
-                let labelName = planet + '_label';
-                let label = labels.find(o => o.name === labelName);
+                //let labelName = planet + '_label';
+                //let label = labels.find(o => o.name === labelName);
 
                 array[i].onPointerUpObservable.add(function () {
                     scene.activeCamera.lockedTarget = scene.getMeshByName(meshParent);
@@ -233,35 +222,61 @@ let createScene = () => {
                         advancedTexture.addControl(on);
                 });
                 array[i].onPointerEnterObservable.add(function () {
-                    label.isVisible = true;
+                    var label = document.createElement("span");
+                    label.setAttribute("id", "label");
+                    label.zIndex = 1;
+                    label.textContent = scene.getMeshByID(planet).name;
+                    var sty = label.style;
+                    sty.position = "absolute";
+                    sty.color = "#ffffff";
+                    sty.backgroundColor = "none";
+                    sty.fontSize = "15pt";
+                    sty.top = "0";
+                    sty.left = "0";
+                    sty.cursor = "pointer";
+                    sty.animation = "tracking-in-expand 0.9s cubic-bezier(0.215, 0.610, 0.355, 1.000) both";
+                    sty.fontFamily = "'Questrial', sans-serif";
+                    sty.letterSpacing = "8px";
+                    sty.transform = "translate3d(50vw, 50px, 0px)";
+                    document.body.appendChild(label);
                 });
                 array[i].onPointerOutObservable.add(function () {
-                    label.isVisible = false;
+                    document.getElementById("label").parentNode.removeChild(document.getElementById("label"));
                 });
             }
             switch (array[i]) {
                 case eur_on:
                     eur_on.left = '-20%';
+                    break;
                 case eur_off:
                     eur_off.left = '-20%';
+                    break;
                 case io_on:
                     io_on.left = '-10%';
+                    break;
                 case io_off:
                     io_off.left = '-10%';
+                    break;
                 case jup_on:
                     jup_on.left = '0%';
+                    break;
                 case jup_off:
                     jup_off.left = '0%';
+                    break;
                 case gan_on:
                     gan_on.left = '10%';
+                    break;
                 case gan_off:
                     gan_off.left = '10%';
+                    break;
                 case cal_on:
                     cal_on.left = '20%';
+                    break;
                 case cal_off:
                     cal_off.left = '20%';
-                default:
                     break;
+                default:
+                    throw new Error(array[i] +" is not defined");
             }
             advancedTexture.addControl(array[i]);
         }
@@ -300,6 +315,47 @@ let createScene = () => {
         alphaIo += 0.0003;
         alphaCalisto += 0.0004;
         //
+    });
+
+    scene.onAfterRenderObservable.add(() => {
+
+        if(document.getElementById("label") != undefined) {
+
+            var planet;
+
+            switch(document.getElementById("label").innerHTML) {
+                case "EUROPA":
+                    planet = eur_l;
+                    break;
+                case "IO":
+                    planet = io_l;
+                    break;
+                case "JUPITER":
+                    planet = jup_l;
+                    break;
+                case "GANYMEDE":
+                    planet = gan_l;
+                    break;
+                case "CALISTO":
+                    planet = cal_l;
+                    break;
+                default:
+                    planet = undefined;
+                    break;
+            }
+
+            vertexScreenCoords = BABYLON.Vector3.Project(
+            BABYLON.Vector3.Zero(), planet.getWorldMatrix(),
+            scene.getTransformMatrix(),
+            camera.viewport.toGlobal(engine.getRenderWidth(true), engine.getRenderHeight(true))
+            );
+            //
+            ofstX = canvas.offsetLeft,
+            ofstY = canvas.offsetTop;
+            //
+            var label = document.getElementById("label");
+            label.style.transform = "translate3d(calc(" + (vertexScreenCoords.x + ofstX) + "px - 50%), calc(" + (vertexScreenCoords.y + ofstY) + "px - 90%), 0px)";
+        }
     });
 
 //----------------------------------------------------------------------------------------------------
