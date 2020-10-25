@@ -15,7 +15,7 @@ let createScene = () => {
     camDefaultPos.position = new BABYLON.Vector3(0, 0, -410);	
     let camera = new BABYLON.FollowCamera("FollowCam", camDefaultPos.position, scene);
 	//The goal distance of camera from target
-	camera.radius = 30;
+	camera.radius = 50;
 	// The goal height of camera above local origin (centre) of target
 	camera.heightOffset = 0;
 	// The goal rotation of camera around local origin (centre) of target in x y plane
@@ -27,6 +27,8 @@ let createScene = () => {
 	//camera.target is set after the target's creation
 	// This attaches the camera to the canvas
     camera.attachControl(canvas, true);
+    //
+
     //
     const sun = new BABYLON.PointLight("sun", new BABYLON.Vector3(50, 50, 30), scene);
     scene.clearColor = new BABYLON.Color3(0, 0, 0);
@@ -129,159 +131,160 @@ let createScene = () => {
     cal_l.parent = cal;
     cal_l.position = new BABYLON.Vector3(0, 15, 0);
 
+    let planets = [jup, eur, gan, io, cal];
+
     // GUI
     let advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     //
-    let buttons = [];
+    let warpKeys = [];
+    let fadeKeys = [];
     //
-    let eur_on = BABYLON.GUI.Button.CreateImageOnlyButton("eur_on", "textures/buttons/eur_on.svg");
-    let eur_off = BABYLON.GUI.Button.CreateImageOnlyButton("eur_off", "textures/buttons/eur_off.svg");
-    let io_on = BABYLON.GUI.Button.CreateImageOnlyButton("io_on", "textures/buttons/io_on.svg");
-    let io_off = BABYLON.GUI.Button.CreateImageOnlyButton("io_off", "textures/buttons/io_off.svg");
-    let jup_on = BABYLON.GUI.Button.CreateImageOnlyButton("jup_on", "textures/buttons/jup_on.svg");
-    let jup_off = BABYLON.GUI.Button.CreateImageOnlyButton("jup_off", "textures/buttons/jup_off.svg");
-    let gan_on = BABYLON.GUI.Button.CreateImageOnlyButton("gan_on", "textures/buttons/gan_on.svg");
-    let gan_off = BABYLON.GUI.Button.CreateImageOnlyButton("gan_off", "textures/buttons/gan_off.svg");
-    let cal_on = BABYLON.GUI.Button.CreateImageOnlyButton("cal_on", "textures/buttons/cal_on.svg");
-    let cal_off = BABYLON.GUI.Button.CreateImageOnlyButton("cal_off", "textures/buttons/cal_off.svg");
+    let rect1 = new BABYLON.GUI.Rectangle();
+    rect1.alpha = 0;
+    rect1.background = "White";
+    //
+    let warpAnim = new BABYLON.Animation("warpAnim", "radius", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT)
+    let fadeAnim = new BABYLON.Animation("fadeAnim", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT)
+    //            
+    warpKeys.push({
+        frame: 0,
+        value: camera.radius
+    });
+    warpKeys.push({
+        frame: 30,
+        value: 0
+    });
+    //
+    fadeKeys.push({
+        frame: 0,
+        value: 0
+    });
+    fadeKeys.push({
+        frame: 15,
+        value: 1
+    });
+    //
+    warpAnim.setKeys(warpKeys);
+    fadeAnim.setKeys(fadeKeys);
+    camera.animations = [];
+    rect1.animations = [];
+    camera.animations.push(warpAnim);
+    rect1.animations.push(fadeAnim);
+    advancedTexture.addControl(rect1);
+    //
+    planets.forEach(planet => applyActions(planet));
+    //
+    function applyActions(planet) {
+        //
+        planet.actionManager = new BABYLON.ActionManager(scene);
+        planet.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction(
+                BABYLON.ActionManager.OnPickTrigger,
+                function () {
+                    scene.beginAnimation(camera, 0, 30, false);
+                    setTimeout(() => {
+                        scene.beginAnimation(rect1, 0, 15, false)}, 800);
+        
+                }
+            )
+        )
+    }
+    //
+    let buttons = [];
+
+    let eur_but = BABYLON.GUI.Button.CreateImageOnlyButton("eur_but", "textures/buttons/eur_off.svg");
+    let io_but = BABYLON.GUI.Button.CreateImageOnlyButton("io_but", "textures/buttons/io_off.svg");
+    let jup_but = BABYLON.GUI.Button.CreateImageOnlyButton("jup_but", "textures/buttons/jup_off.svg");
+    let gan_but = BABYLON.GUI.Button.CreateImageOnlyButton("gan_but", "textures/buttons/gan_off.svg");
+    let cal_but = BABYLON.GUI.Button.CreateImageOnlyButton("cal_but", "textures/buttons/cal_off.svg");
 
     buttons.push(
-        eur_on, 
-        eur_off,
-        io_on,
-        io_off, 
-        jup_on,
-        jup_off,
-        gan_on,
-        gan_off,
-        cal_on,
-        cal_off
+        eur_but,
+        io_but,
+        jup_but,
+        gan_but,
+        cal_but,
     );
 
-    let labels = [];
+    buttons.forEach(createButtons)
+    
+    function createButtons(item) {
+        item.state = "off";
+        item.image.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+        item.color = "transparent";
+        item.width = 0.1;
+        item.height = 0.1;
+        item.top = "38.5%"
+        item.isPointerBlocker = true;
+        item.isSelected = false;
+        
+        let planetName = item.name.split("_").shift();
 
-    //let eur_label = new BABYLON.GUI.TextBlock('eur_label','EUROPA');
-    //let io_label = new BABYLON.GUI.TextBlock('io_label','IO');
-    //let jup_label = new BABYLON.GUI.TextBlock('jup_label','JUPITER');
-    //let gan_label = new BABYLON.GUI.TextBlock('gan_label','GANYMEDE');
-    //let cal_label = new BABYLON.GUI.TextBlock('cal_label','CALISTO');
-
-    function createButtons(array) {
-        for(let i = 0; i < array.length; i++) {
-            array[i].image.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
-            array[i].color = "transparent";
-            array[i].width = 0.1;
-            array[i].height = 0.1;
-            array[i].top = "38.5%"
-            array[i].isPointerBlocker = true;
-            array[i].isSelected = false;
-
-            let state = array[i].name.split('_').pop();
-            //
-            if(state === 'on') {
-                let off = buttons.find(o => o.name === array[i].name.split('_').shift() + '_off');
-                array[i].isVisible = false;
-                array[i].onPointerUpObservable.add(function () {
-                    array[i].isVisible = false;
-                    off.isVisible = true;
-                    advancedTexture.removeControl(array[i]);
-                    if(!advancedTexture.rootContainer.children.includes(off))
-                        advancedTexture.addControl(off);
-                    scene.activeCamera.lockedTarget = undefined;
-                    let ease = new BABYLON.CubicEase();
-                    ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-                    BABYLON.Animation.CreateAndStartAnimation('camDefaultPos', camera, "position", 60, 120, camera.position, new BABYLON.Vector3(0,0,-410), 0, ease);
-                    BABYLON.Animation.CreateAndStartAnimation('camDefaultRot', camera, "rotation", 60, 120, camera.rotation, new BABYLON.Vector3(0,0,0), 0, ease);
-                });
-            }
-            if(state === 'off') {
-                let planet = array[i].name.split('_').shift();
-                let on = buttons.find(o => o.name === planet + '_on');
-                let meshParent = planet + '_p';
-                //let labelName = planet + '_label';
-                //let label = labels.find(o => o.name === labelName);
-
-                array[i].onPointerUpObservable.add(function () {
-                    scene.activeCamera.lockedTarget = scene.getMeshByName(meshParent);
-                    array.forEach((element) => {
-                        if(element.isSelected == true) {
-                            let elementOff = buttons.find(o => o.name === element.name.split('_').shift() + '_off');
-                            element.isVisible = false;
-                            element.isSelected = false;
-                            elementOff.isVisible = true;
-                            if(!advancedTexture.rootContainer.children.includes(elementOff))
-                                advancedTexture.addControl(elementOff);
-                        }
-                    });
-                    on.isVisible = true;
-                    on.isSelected = true;
-                    if(label.isVisible)
-                        label.isVisible = false;
-                    advancedTexture.removeControl(array[i]);
-                    if(!advancedTexture.rootContainer.children.includes(on))
-                        advancedTexture.addControl(on);
-                });
-                array[i].onPointerEnterObservable.add(function () {
-                    var label = document.createElement("span");
-                    label.setAttribute("id", "label");
-                    label.zIndex = 1;
-                    label.textContent = scene.getMeshByID(planet).name;
-                    var sty = label.style;
-                    sty.position = "absolute";
-                    sty.color = "#ffffff";
-                    sty.backgroundColor = "none";
-                    sty.fontSize = "15pt";
-                    sty.top = "0";
-                    sty.left = "0";
-                    sty.cursor = "pointer";
-                    sty.animation = "tracking-in-expand 0.9s cubic-bezier(0.215, 0.610, 0.355, 1.000) both";
-                    sty.fontFamily = "'Questrial', sans-serif";
-                    sty.letterSpacing = "8px";
-                    sty.transform = "translate3d(50vw, 50px, 0px)";
-                    document.body.appendChild(label);
-                });
-                array[i].onPointerOutObservable.add(function () {
-                    document.getElementById("label").parentNode.removeChild(document.getElementById("label"));
-                });
-            }
-            switch (array[i]) {
-                case eur_on:
-                    eur_on.left = '-20%';
-                    break;
-                case eur_off:
-                    eur_off.left = '-20%';
-                    break;
-                case io_on:
-                    io_on.left = '-10%';
-                    break;
-                case io_off:
-                    io_off.left = '-10%';
-                    break;
-                case jup_on:
-                    jup_on.left = '0%';
-                    break;
-                case jup_off:
-                    jup_off.left = '0%';
-                    break;
-                case gan_on:
-                    gan_on.left = '10%';
-                    break;
-                case gan_off:
-                    gan_off.left = '10%';
-                    break;
-                case cal_on:
-                    cal_on.left = '20%';
-                    break;
-                case cal_off:
-                    cal_off.left = '20%';
-                    break;
-                default:
-                    throw new Error(array[i] +" is not defined");
-            }
-            advancedTexture.addControl(array[i]);
+        switch (item) {
+            case eur_but:
+                eur_but.left = '-20%';
+                break;
+            case io_but:
+                io_but.left = '-10%';
+                break;
+            case jup_but:
+                jup_but.left = '0%';
+                break;
+            case gan_but:
+                gan_but.left = '10%';
+                break;
+            case cal_but:
+                cal_but.left = '20%';
+                break;
+            default:
+                throw new Error(item + " is not defined");
         }
+        //
+        let meshParent = planetName + '_p';
+        //
+        item.onPointerUpObservable.add(function () {
+            if(item.state === 'on') {
+                item.image.source = "textures/buttons/" + planetName + "_off.svg";
+                item.state = "off";
+                scene.activeCamera.lockedTarget = undefined;
+                let ease = new BABYLON.CubicEase();
+                ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+                BABYLON.Animation.CreateAndStartAnimation('camDefaultPos', camera, "position", 60, 120, camera.position, new BABYLON.Vector3(0,0,-410), 0, ease);
+                BABYLON.Animation.CreateAndStartAnimation('camDefaultRot', camera, "rotation", 60, 120, camera.rotation, new BABYLON.Vector3(0,0,0), 0, ease);
+            } else {
+                item.state = "on";
+                item.image.source = "textures/buttons/" + planetName + "_on.svg";
+                scene.activeCamera.lockedTarget = scene.getMeshByName(meshParent);
+                if(label.isVisible)
+                    label.isVisible = false;
+            }
+        });
+
+        item.onPointerEnterObservable.add(function () {
+            var label = document.createElement("span");
+            label.setAttribute("id", "label");
+            label.zIndex = 1;
+            label.textContent = scene.getMeshByID(planetName).name;
+            var sty = label.style;
+            sty.position = "absolute";
+            sty.color = "#ffffff";
+            sty.backgroundColor = "none";
+            sty.fontSize = "15pt";
+            sty.top = "0";
+            sty.left = "0";
+            sty.cursor = "pointer";
+            sty.animation = "tracking-in-expand 0.9s cubic-bezier(0.215, 0.610, 0.355, 1.000) both";
+            sty.fontFamily = "'Questrial', sans-serif";
+            sty.letterSpacing = "8px";
+            sty.transform = "translate3d(50vw, 50px, 0px)";
+            document.body.appendChild(label);
+        });
+        item.onPointerOutObservable.add(function () {
+            document.getElementById("label").parentNode.removeChild(document.getElementById("label"));
+        });
+
+        advancedTexture.addControl(item);
     }
-    createButtons(buttons);
 
     // Planet movement & rotation
     let alphaSkybox = 0;
@@ -357,7 +360,6 @@ let createScene = () => {
             label.style.transform = "translate3d(calc(" + (vertexScreenCoords.x + ofstX) + "px - 50%), calc(" + (vertexScreenCoords.y + ofstY) + "px - 90%), 0px)";
         }
     });
-
 //----------------------------------------------------------------------------------------------------
     return scene;
 }
