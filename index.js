@@ -47,10 +47,10 @@ let createScene = () => {
     main_container.lights.push(sun);
 
     // Load the sound and play it automatically once ready
-    //const music = new BABYLON.Sound("planetsounds", "./sounds/01 - Jupiter.mp3", scene, null, {
-    //    loop: true,
-    //    autoplay: true
-    //});
+    const music = new BABYLON.Sound("planetsounds", "./sounds/01 - Jupiter.mp3", scene, null, {
+        loop: true,
+        autoplay: true
+    });
     
     // Skybox
     let skybox = BABYLON.Mesh.CreateBox("skyBox", 1e4, scene);
