@@ -41,13 +41,6 @@ let createScene = () => {
     sun.intensity = 2;
     let shadowGen = new BABYLON.ShadowGenerator(1024, sun);
     shadowGen.usePoissonSampling = true;
-
-
-    // Load the sound and play it automatically once ready
-    const music = new BABYLON.Sound("planetsounds", "./sounds/01 - Jupiter.mp3", scene, null, {
-        loop: true,
-        autoplay: true
-    });
     
     // Skybox
     let skybox = BABYLON.Mesh.CreateBox("skyBox", 1e4, scene);
