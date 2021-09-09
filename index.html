@@ -6,26 +6,34 @@
     <link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/css/00b7b31c511ce943616fd1c5512819b8fcf13ab6/css/index.css'/>
     <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
-    <script src="https://preview.babylonjs.com/ammo.js"></script>
-    <script src="https://preview.babylonjs.com/cannon.js"></script>
-    <script src="https://preview.babylonjs.com/Oimo.js"></script>
-    <script src="https://preview.babylonjs.com/libktx.js"></script>
-    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
-    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
-    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
     <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+        
+        hr {height: 1px; background: linear-gradient(to right, hsl(0,0%,25%), hsl(0,0%,10%)); border: none; margin: 0 1vw;}
+
+        .label-anim {animation: tracking-in-expand 0.9s cubic-bezier(0.215, 0.610, 0.355, 1.000) normal;}
+        .fade-out {animation: fade-out 0.5s ease-out normal;}
+        .fade-in {animation: fade-in 0.5s ease-out normal;}
+        .is-occluded {animation: occluded-label 0.25s ease-in-out normal; opacity: 0.25;}
+        .info-panel {background-color: black; width: 40vw; height: 40vh; position: absolute; z-index: 5; top: 28vh; left: 50vw; box-shadow: inset 0 0 3px hsl(0, 0%, 75%); border-radius: 3.5px;}
+        .info-panel > div {color: hsl(0, 0%, 75%); font-weight: 100;}
+        .title {font-size: 2vw; padding: 1vw; letter-spacing: 0.1vw;}
+        .info {padding: 1vw; font-size: 1.5vw;}
+        .close {float: right; color: hsl(0, 0%, 65%); cursor: pointer;}
+        .open {animation: info-panel 0.5s ease-in-out 0.5s normal backwards; opacity: 0.9}
+        .collapsed {animation: fade-out 0.5s ease-in-out normal forwards; opacity: 0.0;}
+
+        @keyframes tracking-in-expand {0% {letter-spacing: -0.5em; opacity: 0;} 100% {opacity: 1;}}
+        @keyframes fade-out {0% {opacity: inherit} 100% {opacity: 0;}}
+        @keyframes fade-in {0% {opacity: 0.25} 100% {opacity: 1.0;}}
+        @keyframes occluded-label {0% {opacity: 1.0} 100% {opacity: 0.25;}}
+        @keyframes info-panel {0% {clip-path: inset(0 0 100% 0);} 100% {opacity: 0.9; clip-path: inset( 0 0 0 0 )};}
+    </style>
 </head>
 <body>
     <canvas id="renderCanvas" touch-action="none"></canvas>
-    <script src="index.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
-        @keyframes tracking-in-expand {0% {letter-spacing: -0.5em;opacity: 0;}40% {opacity: 0.6;}100% {opacity: 1;}}
-    </style>
+    <script src="js/index.js"></script>
 </body>
 </html>
