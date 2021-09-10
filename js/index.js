@@ -1,4 +1,13 @@
 
+window.addEventListener("load", () => {
+    
+    let preloader = document.getElementById("preloader"); 
+    preloader.classList.add("fade-out");
+    document.querySelector(".fade-out").addEventListener("animationend", () => {
+        preloader.parentNode.removeChild(preloader);
+    });
+})
+
 let canvas;
 let engine;
 

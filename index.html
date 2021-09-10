@@ -12,6 +12,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
 
         hr {height: 1px; background: linear-gradient(to right, hsl(0,0%,25%), hsl(0,0%,10%)); border: none; margin: 0 1vw;}
+        canvas {touch-action: none;}
+
+        .preloader {background-color: hsl(0,0%,5%); display: flex; align-items: center; justify-content: center; position: absolute; width: 100vw; height: 100vh;}
+        .jup-loader {width: 2vw; height: 2vw; border-radius: 100%; background-color: hsl(0, 0%, 100%);}
+        .moon-loader {border-radius: 100%; width: 6vw;height: 6vw; position: absolute; animation: rotate 2s linear infinite;}
+        .moon {width: 0.75vw; height: 0.75vw; border-radius: 100%; position: absolute; top: 1vw; background-color: hsl(0, 0%, 100%);}
+        .eur-loader {width: 4vw;height: 4vw; border: 1px solid hsl(0, 0%, 95%); animation: rotate 2s linear infinite;}
+        .eur-loader > .moon {top: 2.75vw}
+        .gan-loader {width: 7vw;height: 7vw; border: 1px solid hsl(0, 0%, 90%); animation: rotate 3s linear infinite;}
+        .gan-loader > .moon {top: 5.2vw;}
+        .io-loader {width: 10vw;height: 10vw; border: 1px solid hsl(0, 0%, 85%); animation: rotate 4s linear infinite;}
+        .io-loader > .moon {top: 7vw; }
+        .cal-loader {width: 14vw;height: 14vw; border: 1px solid hsl(0, 0%, 80%); animation: rotate 5s linear infinite;}
+        .cal-loader > .moon {top: 4.2vw; }
 
         .rotate-page {opacity: 0%; transition: opacity 0.25s ease-out; position: absolute; color: white; background-color: hsl(210,90%,5%); display: flex; align-items: center; justify-content: center; width: 100vw; height: 100vh; z-index: -10;}
         .rotate-page > div {transform: rotate(90deg)}
@@ -32,14 +46,26 @@
             .rotate-page {opacity: 75%; width: 100vh; height: 100vw; z-index: 5;}
         }
 
+        @media (pointer: none), (pointer: coarse) {
+            .info-panel {top: 25vh;}
+        }
+
         @keyframes tracking-in-expand {0% {letter-spacing: -0.5em; opacity: 0;} 100% {opacity: 1;}}
         @keyframes fade-out {0% {opacity: inherit} 100% {opacity: 0;}}
         @keyframes fade-in {0% {opacity: 0.25} 100% {opacity: 1.0;}}
         @keyframes occluded-label {0% {opacity: 1.0} 100% {opacity: 0.25;}}
         @keyframes info-panel {0% {clip-path: inset(0 0 100% 0);} 100% {opacity: 0.9; clip-path: inset( 0 0 0 0 )};}
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }}
     </style>
 </head>
 <body>
+    <div class="preloader" id="preloader">
+        <div class="jup-loader"></div>
+        <div class="moon-loader eur-loader"><div class="moon"></div></div>
+        <div class="moon-loader gan-loader"><div class="moon"></div></div>
+        <div class="moon-loader io-loader"><div class="moon"></div></div>
+        <div class="moon-loader cal-loader"><div class="moon"></div></div>
+    </div>
     <div class="rotate-page"><div>Please rotate device</div></div>
     <canvas id="renderCanvas" touch-action="none"></canvas>
     <script src="js/index.js"></script>
