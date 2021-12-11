@@ -101,6 +101,10 @@ let createScene = () => {
     jup_target.info = `Jupiter is more than twice as massive than the other planets of our solar system combined. 
     The giant planet's Great Red spot is a centuries-old storm bigger than Earth.`;
 
+    let mat = new BABYLON.StandardMaterial("mat1", scene);
+    mat.diffuseColor = new BABYLON.Color3(1, 1, 1);
+    mat.alpha = 1.0;
+
     // Europa
     let eur_p = new BABYLON.Mesh("eur_p",scene);
     eur_p.parent = jup;
@@ -117,8 +121,6 @@ let createScene = () => {
     eur_l.parent = eur;
     eur_l.position = new BABYLON.Vector3(0, 15, 0);
     let eur_target = new BABYLON.Mesh("eur_target", scene);
-    eur_target.parent = eur_p;
-    eur_target.position = new BABYLON.Vector3(10, 0, 0);
     eur_target.title = eur.name;
     eur_target.info = `Europa is perhaps the most promising place to look for present-day environments suitable for life. 
     Europa is thought to have an ocean of salty water below its frozen outer shell of ice.`;
@@ -139,8 +141,6 @@ let createScene = () => {
     gan_l.parent = gan;
     gan_l.position = new BABYLON.Vector3(0, 15, 0);
     let gan_target = new BABYLON.Mesh("gan_target", scene);
-    gan_target.parent = gan_p;
-    gan_target.position = new BABYLON.Vector3(10, 0, 0);
     gan_target.title = gan.name;
     gan_target.info = `Ganymede is the largest moon in our solar system and the only moon known to create its own magnetic field. 
     Scientists have also found strong evidence of an underground ocean on Ganymede.`;
@@ -161,8 +161,6 @@ let createScene = () => {
     io_l.parent = io;
     io_l.position = new BABYLON.Vector3(0, 15, 0);
     let io_target = new BABYLON.Mesh("io_target", scene);
-    io_target.parent = io_p;
-    io_target.position = new BABYLON.Vector3(12, 0, 0);
     io_target.title = io.name;
     io_target.info = `Io is the most volcanically active world in the solar system, with hundreds of volcanoes, some erupting lava fountains dozens of miles high. 
     Io is caught in a tug-of-war between Jupiter and neighboring moons.`;
@@ -183,8 +181,6 @@ let createScene = () => {
     cal_l.parent = cal;
     cal_l.position = new BABYLON.Vector3(0, 15, 0);
     let cal_target = new BABYLON.Mesh("cal_target", scene);
-    cal_target.parent = cal_p;
-    cal_target.position = new BABYLON.Vector3(12, 0, 0);
     cal_target.title = cal.name;
     cal_target.info = `Callisto is among the most heavily cratered objects that orbit the Sun. 
     It is thought to be a long-dead world, with hardly any geologic activity on its surface—among the oldest landscapes in our solar system.`
@@ -340,7 +336,7 @@ let createScene = () => {
                 item.state = "on";
                 item.isSelected = true;
                 item.image.source = "textures/buttons/" + planetName + "_on.svg";
-                (meshTarget == "jup_target") ? camera.radius = -275 : camera.radius = -30;
+                (meshTarget == "jup_target") ? camera.radius = -275 : camera.radius = -25
                 scene.activeCamera.lockedTarget = scene.getMeshByName(meshTarget);
 
                 // Create and open panel
@@ -482,6 +478,18 @@ let createScene = () => {
         cal.rotation.y += .03; 
         
         alpha += 0.0025;
+
+        eur_target.position = eur.absolutePosition;
+        eur_target.position.x += 8;
+
+        gan_target.position = gan.absolutePosition;
+        gan_target.position.x += 8;
+
+        io_target.position = io.absolutePosition;
+        io_target.position.x += 8;
+
+        cal_target.position = cal.absolutePosition;
+        cal_target.position.x += 8;
            
     });
 
